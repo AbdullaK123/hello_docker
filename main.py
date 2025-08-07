@@ -64,7 +64,7 @@ def get_visit_count():
         print(f"Error getting visit count: {e}")
         return 0
 
-def get_recent_visits(limit=5):
+def get_recent_visits(limit=100):
     """Get recent visits"""
     try:
         conn = get_db_connection()

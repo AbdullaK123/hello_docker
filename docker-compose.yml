@@ -1,0 +1,24 @@
+services:
+  my-app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_NAME=HELLO_DOCKER_COMPOSE
+      - APP_VERSION=1.0
+      - ENV="Development"
+      - DATABASE_URL=postgresql://app_user:app_password@db:5432/myapp
+    depends_on:
+      - db
+    restart: unless-stopped
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=app_password
+      - POSTGRES_DB=myapp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
+  postgres_data:
