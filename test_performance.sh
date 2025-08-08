@@ -4,7 +4,7 @@
 
 echo "🧪 Testing Flask-only performance..."
 
-URL="http://localhost:5000"
+URL="http://localhost:3000"
 REQUESTS=1000
 CONCURRENT=10
 

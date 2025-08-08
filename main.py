@@ -7,6 +7,9 @@ import redis
 import json
 from datetime import datetime
 import time
+import uuid
+
+CONTAINER_ID = str(uuid.uuid4())[:8]
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
@@ -164,22 +167,31 @@ def hello():
     recent_visits = get_recent_visits(5)
     
     return f"""
-    <h1>Hello from {app_name}!</h1>
-    <p><strong>Version:</strong> {version}</p>
-    <p><strong>Environment:</strong> {environment}</p>
-    <p><strong>Container hostname:</strong> {hostname}</p>
-    <p><strong>Your session:</strong> {user_session}</p>
-    <p><strong>Total visits:</strong> {total_visits}</p>
-    <p><strong>Database:</strong> {'✅ Connected' if total_visits >= 0 else '❌ Disconnected'}</p>
-    <p><strong>Redis:</strong> {'✅ Connected' if test_redis() else '❌ Disconnected'}</p>
-    
-    <h3>Recent Visits:</h3>
-    <ul>
-    {''.join([f"<li>{visit['timestamp']} - {visit['hostname']} - {visit['session'][:12]}...</li>" for visit in recent_visits])}
-    </ul>
-    
-    <p><small>Refresh to increment visit counter! Notice cache indicators in logs.</small></p>
-    """
+        <h1>🌟 Hello from {app_name}!</h1>
+        <p><strong>Version:</strong> {version}</p>
+        <p><strong>Environment:</strong> {environment}</p>
+        <p><strong>🔥 CONTAINER ID:</strong> {CONTAINER_ID}</p>
+        <p><strong>Hostname:</strong> {hostname}</p>
+        <p><strong>Backend Server:</strong> {request.headers.get('X-Backend-Server', 'unknown')}</p>
+        <p><strong>Your session:</strong> {user_session}</p>
+        <p><strong>Total visits:</strong> {total_visits}</p>
+        
+        <div style="background: #e8f5e8; padding: 10px; margin: 10px 0; border-radius: 5px;">
+            <h3>🚀 PERFORMANCE STATS</h3>
+            <p><strong>Database:</strong> {'✅ Connected' if total_visits >= 0 else '❌ Disconnected'}</p>
+            <p><strong>Redis:</strong> {'✅ Connected' if test_redis() else '❌ Disconnected'}</p>
+        </div>
+        
+        <h3>Recent Visits:</h3>
+        <ul>
+        {''.join([f"<li>{visit['timestamp']} - Container: {visit['hostname']} - Session: {visit['session'][:12]}...</li>" for visit in recent_visits])}
+        </ul>
+        
+        <p><small>
+        🔄 <strong>Refresh to see different containers!</strong><br>
+        🏎️  With Redis caching + Nginx: Sub-millisecond responses!
+        </small></p>
+        """
 
 def test_redis():
     """Test Redis connection"""
